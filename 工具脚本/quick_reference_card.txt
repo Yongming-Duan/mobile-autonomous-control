@@ -1,0 +1,130 @@
+╔══════════════════════════════════════════════════════════════════╗
+║     荣耀手机 Termux 传感器 API - 快速参考卡                      ║
+║     Version 2.0 | 2026-03-07                                      ║
+╚══════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────┐
+│  🔧 快速启动                                                      │
+└──────────────────────────────────────────────────────────────────┘
+
+# 1. 启动服务器（Termux 中）
+cd /sdcard
+python simple_sensor_server.py
+
+# 2. PC 端连接
+adb forward tcp:9999 tcp:9999
+
+# 3. 测试
+curl http://127.0.0.1:9999/health
+
+┌──────────────────────────────────────────────────────────────────┐
+│  📡 API 端点                                                      │
+└──────────────────────────────────────────────────────────────────┘
+
+GET /health                    # 健康检查
+GET /sensors                   # 传感器列表
+GET /sensor/accelerometer      # 加速度计
+GET /sensor/gyroscope          # 陀螺仪
+GET /sensor/light              # 光线
+GET /sensor/magnetic           # 磁场
+GET /sensor/pressure           # 气压
+GET /sensor/temperature        # 温度
+GET /sensor/proximity          # 距离
+GET /sensor/gravity            # 重力
+GET /sensor/linear_acceleration # 线性加速度
+GET /sensor/rotation_vector    # 旋转向量
+GET /sensor/orientation        # 方向
+GET /tts?text=Hello            # 语音合成
+GET /battery                   # 电池状态
+
+┌──────────────────────────────────────────────────────────────────┐
+│  ⌨️  ADB Input 自动化                                             │
+└──────────────────────────────────────────────────────────────────┘
+
+# 启动 Termux
+adb shell "am start -n com.termux/.app.TermuxActivity"
+
+# 输入命令（空格用 %s 替代）
+adb shell "input text 'termux-sensor%s-l'"
+
+# 按回车
+adb shell "input keyevent 66"
+
+# 按键代码
+4 = BACK    24 = VOL+    66 = ENTER
+3 = HOME    25 = VOL-    67 = DEL
+
+┌──────────────────────────────────────────────────────────────────┐
+│  📱 Termux:API 命令                                              │
+└──────────────────────────────────────────────────────────────────┘
+
+termux-sensor -l                              # 列出传感器
+termux-sensor -s Accelerometer -n 1          # 读取加速度计
+termux-tts-speak "Hello World"               # 语音合成
+termux-battery-status                         # 电池状态
+termux-camera-photo /sdcard/photo.jpg        # 拍照
+termux-microphone-record -f /sdcard/audio.wav -l 5  # 录音5秒
+
+┌──────────────────────────────────────────────────────────────────┐
+│  🐍 Python 客户端示例                                             │
+└──────────────────────────────────────────────────────────────────┘
+
+import urllib.request
+import json
+
+# 读取传感器
+url = "http://127.0.0.1:9999/sensor/accelerometer"
+with urllib.request.urlopen(url) as response:
+    data = json.loads(response.read().decode())
+    print(data)
+
+┌──────────────────────────────────────────────────────────────────┐
+│  🔍 故障排除                                                      │
+└──────────────────────────────────────────────────────────────────┘
+
+问题：ADB 无法连接
+解决：adb kill-server && adb start-server
+
+问题：termux-sensor 命令不存在
+解决：adb install termux-api-git.apk
+
+问题：端口被占用
+解决：killall python
+
+问题：API 无响应
+解决：adb forward tcp:9999 tcp:9999
+
+┌──────────────────────────────────────────────────────────────────┐
+│  📊 性能参数                                                      │
+└──────────────────────────────────────────────────────────────────┘
+
+服务器启动:   < 1 秒
+API 响应:     < 500ms
+内存占用:     ~20MB
+CPU 占用:     < 5%
+采样率:       最高 10Hz
+并发支持:     ~10 请求/秒
+
+┌──────────────────────────────────────────────────────────────────┐
+│  📁 重要文件位置                                                  │
+└──────────────────────────────────────────────────────────────────┘
+
+/sdcard/simple_sensor_server.py           # HTTP 服务器
+/sdcard/test_server.py                    # 测试脚本
+测试报告/荣耀手机Termux传感器API技术参考文档.md  # 完整文档
+
+┌──────────────────────────────────────────────────────────────────┐
+│  ⚡ 常用 curl 命令                                                │
+└──────────────────────────────────────────────────────────────────┘
+
+curl http://127.0.0.1:9999/health
+curl http://127.0.0.1:9999/sensors
+curl http://127.0.0.1:9999/sensor/accelerometer
+curl "http://127.0.0.1:9999/tts?text=Hello"
+curl http://127.0.0.1:9999/battery
+
+═══════════════════════════════════════════════════════════════════
+💾 保存此文件以便快速查阅
+📖 完整文档: 测试报告/荣耀手机Termux传感器API技术参考文档.md
+🔗 GitHub: https://github.com/termux/termux-api
+═══════════════════════════════════════════════════════════════════

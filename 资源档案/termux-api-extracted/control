@@ -1,0 +1,8 @@
+Package: termux-api
+Architecture: aarch64
+Installed-Size: 364
+Maintainer: @termux
+Version: 0.59.1-1
+Homepage: https://wiki.termux.com/wiki/Termux:API
+Depends: bash, util-linux, termux-am (>= 0.8.0)
+Description: Termux API commands (install also the Termux:API app)
